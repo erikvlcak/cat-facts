@@ -3,12 +3,12 @@ import Controls from "./Controls";
 import catReducer from "./catReducer";
 import Dialog from "./Dialog";
 
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 
 export default function App() {
-  //const [log, dispatch] = useReducer(catReducer, []);
   const [fact, setFact] = useState("Let's learn some cool facts!");
   const [dialogState, setDialogState] = useState(false);
+  const [list, dispatch] = useReducer(catReducer, []);
 
   async function handleFetch() {
     try {
@@ -25,6 +25,8 @@ export default function App() {
     }
   }
 
+  useEffect(() => handleFetch, []);
+
   return (
     <div className="flex flex-col items-center justify-start gap-2 h-full">
       <DisplayFacts fact={fact} />
@@ -34,8 +36,10 @@ export default function App() {
         fetch={handleFetch}
         setDialogState={setDialogState}
         openDialog={dialogState}
+        list={list}
+        dispatch={dispatch}
       />
-      <Dialog setDialogState={setDialogState} dialogState={dialogState} />
+      <Dialog setDialogState={setDialogState} dialogState={dialogState} list={list} />
     </div>
   );
 }

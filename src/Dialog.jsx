@@ -4,7 +4,7 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 
-export default function Modal({ setDialogState, dialogState }) {
+export default function Modal({ setDialogState, dialogState, list }) {
   return (
     <Dialog open={dialogState} onClose={() => setDialogState(!dialogState)} className="relative z-10">
       <DialogBackdrop
@@ -26,10 +26,10 @@ export default function Modal({ setDialogState, dialogState }) {
                 <DialogTitle as="h3" className="text-base font-semibold leading-6 text-gray-900">
                   Your favorite cat facts!
                 </DialogTitle>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur amet labore.
-                  </p>
+                <div className="mt-2 overflow-scroll">
+                  {list.map((item) => {
+                    return <div key={item.id}>{item.fact}</div>;
+                  })}
                 </div>
               </div>
             </div>
