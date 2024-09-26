@@ -9,6 +9,7 @@ export default function App() {
   const [fact, setFact] = useState("Let's learn some cool facts!");
   const [dialogState, setDialogState] = useState(false);
   const [list, dispatch] = useReducer(catReducer, []);
+  const [id, setId] = useState(0);
 
   async function handleFetch() {
     try {
@@ -38,8 +39,10 @@ export default function App() {
         openDialog={dialogState}
         list={list}
         dispatch={dispatch}
+        id={id}
+        setId={setId}
       />
-      <Dialog setDialogState={setDialogState} dialogState={dialogState} list={list} />
+      <Dialog setDialogState={setDialogState} dialogState={dialogState} list={list} dispatch={dispatch} />
     </div>
   );
 }

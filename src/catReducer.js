@@ -1,10 +1,27 @@
 function catReducer(list, action) {
   switch (action.type) {
     case "add to list": {
-      console.log("added fact", action.payload.newFact);
-      let factObject = { id: Date.now(), fact: action.payload.newFact }; //need to find a way how to store data, what keys to use and how to get all stored data at once when displaying list of facts.
-      localStorage.setItem(1, factObject.fact);
+      action.payload.setNewId((prev) => prev + 1);
+      let factObject = { id: action.payload.newId, fact: action.payload.newFact, selected: false };
+      // localStorage.setItem("factsArray", JSON.stringify(list));
       return [...list, factObject];
+    }
+    case "select all": {
+      return list.map((item) => {
+        return { ...item, selected: true };
+      });
+    }
+    case "deselect all": {
+      return list.map((item) => {
+        return { ...item, selected: false };
+      });
+    }
+    case "click checkbox": {
+      return list.map((item) => {
+        if (item.id == action.payload.clickedItem.id) {
+          return { ...item, selected: !item.selected };
+        } else return item;
+      });
     }
   }
 }
