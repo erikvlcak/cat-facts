@@ -3,8 +3,12 @@
 
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 
 export default function Modal({ setDialogState, dialogState, list, dispatch }) {
+  const [toggleSelectBtn, setToggleSlectBtn] = useState(false);
+  const [toggleSaveBtn, setToggleSaveBtn] = useState(false);
+
   return (
     <Dialog open={dialogState} onClose={() => setDialogState(!dialogState)} className="relative z-10">
       <DialogBackdrop
@@ -26,31 +30,55 @@ export default function Modal({ setDialogState, dialogState, list, dispatch }) {
                 <DialogTitle as="h3" className="text-base font-semibold leading-6 text-gray-900">
                   Your favorite cat facts!
                 </DialogTitle>
-                <div>
-                  <button onClick={() => dispatch({ type: "select all" })}>Select all</button>
-                  <button onClick={() => dispatch({ type: "deselect all" })}>Clear selection</button>
+                <div className="flex justify-start ">
+                  {toggleSelectBtn ? (
+                    <button
+                      onClick={() => {
+                        dispatch({ type: "deselect all" });
+                        setToggleSlectBtn(!toggleSelectBtn);
+                      }}
+                    >
+                      Clear selection
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        dispatch({ type: "select all" });
+                        setToggleSlectBtn(!toggleSelectBtn);
+                      }}
+                    >
+                      Select all
+                    </button>
+                  )}
+                  {toggleSaveBtn && <button>Save</button>}
                 </div>
                 <div className="mt-2 overflow-scroll">
                   {list.map((item) => {
                     return (
-                      <div key={item.id} className="flex flex-row items-center justify-between p-2">
+                      <div key={item.id} className="flex flex-row items-center justify-start p-2 text-left gap-10">
                         {item.selected ? (
                           <input
                             type="checkbox"
                             name="select"
                             id="select"
                             checked
-                            onChange={() => dispatch({ type: "click checkbox", payload: { clickedItem: item } })}
+                            onChange={() =>
+                              dispatch({
+                                type: "click checkbox",
+                                payload: {
+                                  clickedItem: item,
+                                },
+                              })
+                            }
                           />
                         ) : (
                           <input
                             type="checkbox"
                             name="select"
                             id="select"
-                            onChange={() => dispatch({ type: "click checkbox", payload: { clickedItem: item } })}
+                            onChange={() => dispatch({ type: "click checkbox", payload: { clickedItem: item } })} //pridat dispatch na skontrolovanie ci je v liste niekde selected a vtedz zobrazit save btn
                           />
                         )}
-
                         {item.fact}
                       </div>
                     );
