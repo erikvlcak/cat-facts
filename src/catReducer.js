@@ -2,7 +2,7 @@ function catReducer(list, action) {
   switch (action.type) {
     case "add to list": {
       action.payload.setNewId((prev) => prev + 1);
-      let factObject = { id: action.payload.newId, fact: action.payload.newFact, selected: false, favorite: false };
+      let factObject = { id: action.payload.newId, fact: action.payload.newFact, selected: false};
       // localStorage.setItem("factsArray", JSON.stringify(list));
       return [...list, factObject];
     }

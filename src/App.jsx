@@ -6,7 +6,7 @@ import Dialog from "./Dialog";
 import { useEffect, useReducer, useState } from "react";
 
 export default function App() {
-  const [fact, setFact] = useState("Let's learn some cool facts!");
+  const [fact, setFact] = useState("Loading facts, please wait!");
   const [dialogState, setDialogState] = useState(false);
   const [list, dispatch] = useReducer(catReducer, []);
   const [id, setId] = useState(0);
@@ -22,7 +22,7 @@ export default function App() {
       let data = await response.json();
       setFact(data.fact);
     } catch (error) {
-      console.error(`There has been some unexpected network error: ${error.message}`);
+      console.error(`There has been some unexpected network error: ${error.message} ${error.status}`);
     }
   }
 
