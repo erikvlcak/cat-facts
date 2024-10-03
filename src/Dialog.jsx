@@ -2,12 +2,18 @@
 "use client";
 
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import { useEffect } from "react";
+import catHead from "./assets/cat-tuxedo-head.png";
 
 export default function Modal({ setDialogState, dialogState, list, dispatch }) {
   const [toggleSelectBtn, setToggleSlectBtn] = useState(false);
   const [toggleSaveBtn, setToggleSaveBtn] = useState(false);
+  const [numberOfSelected, setNumberOfSelected] = useState(0);
+
+    useEffect(() => {
+    setNumberOfSelected(list.filter(f => f.selected).length);
+  }, [list]);
 
   return (
     <Dialog open={dialogState} onClose={() => setDialogState(!dialogState)} className="relative z-10">
@@ -22,14 +28,17 @@ export default function Modal({ setDialogState, dialogState, list, dispatch }) {
             transition
             className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-[80%]  sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95" //sm:max-w-sm
           >
+            
             <div>
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                <CheckIcon aria-hidden="true" className="h-6 w-6 text-green-600" />
-              </div>
-              <div className="mt-3 text-center sm:mt-5">
-                <DialogTitle as="h3" className="text-base font-semibold leading-6 text-gray-900">
+              <DialogTitle as="h3" className="text-xl font-semibold text-gray-900 text-center p-4">
                   Your favorite cat facts!
                 </DialogTitle>
+              <div className="flex flex-row justify-center items-center">
+                <button className="p-3">New favorite facts</button>
+                <button className="p-3">Saved favorite facts</button>
+              </div>
+              <div className="mt-3 text-center sm:mt-5">
+                
                 <div className="flex justify-start ">
                   {toggleSelectBtn ? (
                     <button
@@ -55,31 +64,17 @@ export default function Modal({ setDialogState, dialogState, list, dispatch }) {
                 <div className="mt-2 overflow-scroll">
                   {list.map((item) => {
                     return (
-                      <div key={item.id} className="flex flex-row items-center justify-start p-2 text-left gap-10">
-                        {item.selected ? (
-                          <input
-                            type="checkbox"
-                            name="select"
-                            id="select"
-                            checked
-                            onChange={() =>
-                              dispatch({
-                                type: "click checkbox",
-                                payload: {
-                                  clickedItem: item,
-                                },
-                              })
-                            }
-                          />
-                        ) : (
-                          <input
-                            type="checkbox"
-                            name="select"
-                            id="select"
-                            onChange={() => dispatch({ type: "click checkbox", payload: { clickedItem: item } })} //pridat dispatch na skontrolovanie ci je v liste niekde selected a vtedz zobrazit save btn
-                          />
-                        )}
-                        {item.fact}
+                      <div key={item.id} onClick={() => {
+                        dispatch({ type: 'select fact', payload: { clickedItem: item } })
+                        
+                        
+                  } }
+                  className={` ${item.selected && 'bg-gray-200'} flex flex-row items-center select-none justify-start text-left h-20 hover:bg-gray-300`}>
+                        <div className="w-20 flex justify-center items-center">
+                          {item.selected && <img className="h-14 w-14" src={catHead} alt="selected fact" />}
+                          </div>
+                          <div className="w-[90%]">{!item.favorite && item.fact}</div>
+                        
                       </div>
                     );
                   })}
@@ -89,12 +84,13 @@ export default function Modal({ setDialogState, dialogState, list, dispatch }) {
             <div className="mt-5 sm:mt-6">
               <button
                 type="button"
+                disabled = {!numberOfSelected}
                 onClick={() => {
                   localStorage.setItem("factsArray", JSON.stringify(list));
                 }}
-                className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className={` ${!numberOfSelected && 'disabled:opacity-50 disabled:bg-gray-500'} inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
               >
-                Save facts for later
+                {numberOfSelected > 1 ? <span>Save ({numberOfSelected}) selected facts</span>  : numberOfSelected == 1 ? <span>Save ({numberOfSelected}) selected fact</span> : <span>No fact selected</span> }
               </button>
               <button
                 type="button"
